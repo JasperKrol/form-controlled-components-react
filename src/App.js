@@ -1,25 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-    const [nameValue, setNameValue] = React.useState("")
-    const [ageValue, setAgeValue] = React.useState("0")
-    const [detailsValues, setDetailsValues] = React.useState("")
-    const [commentValue, setCommentValues] = React.useState("")
-    // console.log(nameValue, ageValue, detailsValues, commentValue)
+    // initialiseer één state variabele met daarin een object aan form-waardes
+    // let op: de namen van de keys moeten overeenkomen met de name-attributen van de velden
+    const [formState, setFormState] = useState({
+        name: '',
+        age: 0,
+        referrer: 'anders',
+        comments: '',
+    })
 
-    // functie maken die op event reageert en alle waardes console logt
-        // op de form, hier zet je niet een functie op maar de {statefunctie}
-
-    function submitAndLogData (e) {
+    function handleSubmit(e) {
         e.preventDefault();
-        console.log(nameValue, ageValue, detailsValues, commentValue)
+        console.log(formState);
+    }
+
+    // handleFormChange wordt afgevuurd bij elke verandering en zorgt dan dat het huidige state object wordt gekopieerd
+    // alleen de object key van het bijbehorende inputveld wordt overschreven met een nieuwe waarde
+    function handleFormChange(e) {
+        setFormState({
+            ...formState,
+            [e.target.name]: e.target.value,
+        });
+
+        console.log(`The value of input ${e.target.name} has just been set to ${e.target.value}`);
     }
 
     return (
-        <form
-        onSubmit={submitAndLogData}
-        >
+        <form onSubmit={handleSubmit}>
             <fieldset>
                 <legend>Gegevens</legend>
 
@@ -27,58 +36,60 @@ function App() {
                     Naam:
                     <input
                         type="text"
-                        name="details-name"
+                        name="name"
                         id="details-name"
-                        value={nameValue}
-                        onChange={(e) => setNameValue(e.target.value)}
+                        value={formState.name}
+                        onChange={handleFormChange}
                     />
                 </label>
 
                 <label htmlFor="details-age">
-                    Age:
+                    Leeftijd:
                     <input
-                        type="text"
-                        name="details-age"
+                        type="number"
+                        name="age"
                         id="details-age"
-                        value={ageValue}
-                        onChange={(e) => setAgeValue(parseInt(e.target.value))}
+                        value={formState.age}
+                        onChange={handleFormChange}
                     />
                 </label>
             </fieldset>
 
             <fieldset>
                 <legend>Jouw review</legend>
-                <label htmlFor="details-information">
+
+                <label htmlFor="referrer">
                     Hoe heb je dit recept gevonden?
                     <select
                         name="found-through"
-                        id="details-information"
-                        value={detailsValues}
-                        onChange={(e) => setDetailsValues(e.target.value)}
-
+                        id="referrer"
+                        value={formState.referrer}
+                        onChange={handleFormChange}
                     >
                         <option value="google">Google</option>
-                        <option value="friend">A Friend</option>
-                        <option value="adds">Advertisement</option>
-                        <option value="else">Else</option>
+                        <option value="vriend">Vriend</option>
+                        <option value="advertentie">Advertentie</option>
+                        <option value="anders">Anders</option>
                     </select>
                 </label>
 
                 <label htmlFor="recipe-comments">
                     Opmerkingen:
                     <textarea
-                        name="recipe-comments"
+                        name="comments"
                         id="recipe-comments"
-                        cols="30"
-                        rows="5"
+                        rows="4"
+                        cols="40"
                         placeholder="Wat vond je van het recept?"
-                        value={commentValue}
-                        onChange={(e) => setCommentValues(e.target.value)}
+                        value={formState.comments}
+                        onChange={handleFormChange}
                     >
-                    </textarea>
+          </textarea>
                 </label>
 
-                <button type="submit">Versturen</button>
+                <button type="submit">
+                    Versturen
+                </button>
             </fieldset>
         </form>
     );
